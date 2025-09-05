@@ -1,0 +1,760 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Communication Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          borderRadius: {
+            lg: "var(--radius)",
+            md: "calc(var(--radius) - 2px)",
+            sm: "calc(var(--radius) - 4px)",
+          },
+          colors: {
+            background: "var(--background)",
+            foreground: "var(--foreground)",
+            card: {
+              DEFAULT: "var(--card)",
+              foreground: "var(--card-foreground)",
+            },
+            popover: {
+              DEFAULT: "var(--popover)",
+              foreground: "var(--popover-foreground)",
+            },
+            primary: {
+              DEFAULT: "var(--primary)",
+              foreground: "var(--primary-foreground)",
+            },
+            secondary: {
+              DEFAULT: "var(--secondary)",
+              foreground: "var(--secondary-foreground)",
+            },
+            muted: {
+              DEFAULT: "var(--muted)",
+              foreground: "var(--muted-foreground)",
+            },
+            accent: {
+              DEFAULT: "var(--accent)",
+              foreground: "var(--accent-foreground)",
+            },
+            destructive: {
+              DEFAULT: "var(--destructive)",
+              foreground: "var(--destructive-foreground)",
+            },
+            border: "var(--border)",
+            input: "var(--input)",
+            ring: "var(--ring)",
+            chart: {
+              "1": "var(--chart-1)",
+              "2": "var(--chart-2)",
+              "3": "var(--chart-3)",
+              "4": "var(--chart-4)",
+              "5": "var(--chart-5)",
+            }
+          },
+          fontFamily: {
+            sans: ["var(--font-sans)"],
+            serif: ["var(--font-serif)"],
+            mono: ["var(--font-mono)"],
+          }
+        },
+      }
+    };
+    </script>
+    <style>
+      :root {
+        --background: hsl(210 40% 98%);
+        --foreground: hsl(210 40% 8%);
+        --card: hsl(210 40% 100%);
+        --card-foreground: hsl(210 40% 15%);
+        --popover: hsl(210 40% 100%);
+        --popover-foreground: hsl(210 40% 15%);
+        --primary: hsl(214 85% 58%);
+        --primary-foreground: hsl(210 40% 98%);
+        --secondary: hsl(210 40% 96%);
+        --secondary-foreground: hsl(210 40% 8%);
+        --muted: hsl(210 40% 96%);
+        --muted-foreground: hsl(210 40% 35%);
+        --accent: hsl(210 40% 92%);
+        --accent-foreground: hsl(210 40% 15%);
+        --destructive: hsl(0 84% 60%);
+        --destructive-foreground: hsl(210 40% 98%);
+        --border: hsl(210 40% 88%);
+        --input: hsl(210 40% 92%);
+        --ring: hsl(214 85% 58%);
+        --radius: 0.5rem;
+        --chart-1: hsl(12 76% 61%);
+        --chart-2: hsl(173 58% 39%);
+        --chart-3: hsl(197 37% 24%);
+        --chart-4: hsl(43 74% 66%);
+        --chart-5: hsl(27 87% 67%);
+        --font-sans: "Inter", system-ui, sans-serif;
+        --font-serif: "Inter", Georgia, serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+      
+      .dark {
+        --background: hsl(210 40% 3%);
+        --foreground: hsl(210 40% 98%);
+        --card: hsl(210 40% 6%);
+        --card-foreground: hsl(210 40% 98%);
+        --popover: hsl(210 40% 6%);
+        --popover-foreground: hsl(210 40% 98%);
+        --primary: hsl(214 85% 58%);
+        --primary-foreground: hsl(210 40% 98%);
+        --secondary: hsl(210 40% 10%);
+        --secondary-foreground: hsl(210 40% 98%);
+        --muted: hsl(210 40% 10%);
+        --muted-foreground: hsl(210 40% 65%);
+        --accent: hsl(210 40% 15%);
+        --accent-foreground: hsl(210 40% 98%);
+        --destructive: hsl(0 84% 60%);
+        --destructive-foreground: hsl(210 40% 98%);
+        --border: hsl(210 40% 18%);
+        --input: hsl(210 40% 18%);
+        --ring: hsl(214 85% 58%);
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-background text-foreground font-sans">
+    <!-- @COMPONENT: AppHeader -->
+    <header class="bg-card border-b border-border sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-robot text-primary-foreground text-lg"></i>
+                        </div>
+                        <h1 class="text-xl font-semibold text-foreground" data-testid="app-title">AI Communication Assistant</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 bg-muted px-3 py-2 rounded-md">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-muted-foreground">System Active</span>
+                    </div>
+                    <button class="w-10 h-10 bg-accent hover:bg-accent/80 rounded-lg flex items-center justify-center transition-colors" 
+                            data-testid="settings-btn" aria-label="Settings">
+                        <i class="fas fa-cog text-accent-foreground"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: AppHeader -->
+
+    <div class="container mx-auto px-6 py-6">
+        <!-- @COMPONENT: StatsOverview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-card border border-border rounded-lg p-6" data-testid="total-emails-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-muted-foreground">Total Emails (24h)</p>
+                        <p class="text-2xl font-bold text-foreground" data-bind="stats.totalEmails">21</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-envelope text-blue-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-green-600 font-medium">+12%</span>
+                    <span class="text-muted-foreground ml-2">vs yesterday</span>
+                </div>
+            </div>
+
+            <div class="bg-card border border-border rounded-lg p-6" data-testid="urgent-emails-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-muted-foreground">Urgent Emails</p>
+                        <p class="text-2xl font-bold text-destructive" data-bind="stats.urgentEmails">7</p>
+                    </div>
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-red-600 font-medium">+3 new</span>
+                    <span class="text-muted-foreground ml-2">require attention</span>
+                </div>
+            </div>
+
+            <div class="bg-card border border-border rounded-lg p-6" data-testid="resolved-emails-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-muted-foreground">Resolved</p>
+                        <p class="text-2xl font-bold text-green-600" data-bind="stats.resolvedEmails">14</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-green-600 font-medium">67%</span>
+                    <span class="text-muted-foreground ml-2">resolution rate</span>
+                </div>
+            </div>
+
+            <div class="bg-card border border-border rounded-lg p-6" data-testid="avg-response-time-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-muted-foreground">Avg Response Time</p>
+                        <p class="text-2xl font-bold text-foreground" data-bind="stats.avgResponseTime">2.4h</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-clock text-purple-600"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-green-600 font-medium">-15%</span>
+                    <span class="text-muted-foreground ml-2">improvement</span>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: StatsOverview -->
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- @COMPONENT: EmailList -->
+            <div class="lg:col-span-2">
+                <div class="bg-card border border-border rounded-lg">
+                    <div class="p-6 border-b border-border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-foreground">Support Emails</h2>
+                            <div class="flex items-center space-x-2">
+                                <button class="px-3 py-1 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors" 
+                                        data-testid="refresh-emails-btn">
+                                    <i class="fas fa-sync-alt mr-1"></i>
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Filters -->
+                        <div class="flex flex-wrap items-center gap-3 mb-4">
+                            <select class="px-3 py-2 border border-border rounded-md bg-background text-sm" 
+                                    data-testid="priority-filter" aria-label="Filter by priority">
+                                <option value="all">All Priorities</option>
+                                <option value="urgent">Urgent Only</option>
+                                <option value="normal">Normal Only</option>
+                            </select>
+                            
+                            <select class="px-3 py-2 border border-border rounded-md bg-background text-sm" 
+                                    data-testid="sentiment-filter" aria-label="Filter by sentiment">
+                                <option value="all">All Sentiments</option>
+                                <option value="positive">Positive</option>
+                                <option value="neutral">Neutral</option>
+                                <option value="negative">Negative</option>
+                            </select>
+                            
+                            <div class="relative">
+                                <input type="text" placeholder="Search emails..." 
+                                       class="pl-10 pr-4 py-2 border border-border rounded-md bg-background text-sm"
+                                       data-testid="search-input" aria-label="Search emails">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divide-y divide-border">
+                        <!-- Email Item 1 - Urgent -->
+                        <!-- @MAP: emails.filter(email => email.priority === 'urgent').map(email => ( -->
+                        <div class="p-6 hover:bg-accent/50 cursor-pointer transition-colors" 
+                             data-testid="email-item-urgent" data-email-id="1">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                        <span class="text-red-700 font-semibold text-sm" data-mock="true">A</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground" data-bind="email.sender" data-mock="true">alice@example.com</p>
+                                        <p class="text-xs text-muted-foreground" data-bind="email.sentDate" data-mock="true">Aug 26, 2025 • 2:58 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full" data-testid="priority-badge">
+                                        URGENT
+                                    </span>
+                                    <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full" data-testid="sentiment-badge">
+                                        Negative
+                                    </span>
+                                </div>
+                            </div>
+                            <h3 class="font-medium text-foreground mb-2" data-bind="email.subject" data-mock="true">Critical help needed for downtime</h3>
+                            <p class="text-sm text-muted-foreground mb-3 line-clamp-2" data-bind="email.body" data-mock="true">
+                                Our servers are down, and we need immediate support. This is highly critical.
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-muted-foreground">
+                                <div class="flex items-center space-x-4">
+                                    <span><i class="fas fa-robot mr-1"></i>AI Response Ready</span>
+                                    <span><i class="fas fa-clock mr-1"></i>2 min ago</span>
+                                </div>
+                                <button class="text-primary hover:underline" data-testid="view-response-btn">
+                                    View Response
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Email Item 2 - Normal -->
+                        <div class="p-6 hover:bg-accent/50 cursor-pointer transition-colors" 
+                             data-testid="email-item-normal" data-email-id="2">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <span class="text-blue-700 font-semibold text-sm" data-mock="true">E</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground" data-bind="email.sender" data-mock="true">eve@startup.io</p>
+                                        <p class="text-xs text-muted-foreground" data-bind="email.sentDate" data-mock="true">Aug 25, 2025 • 12:58 PM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full" data-testid="priority-badge">
+                                        Normal
+                                    </span>
+                                    <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full" data-testid="sentiment-badge">
+                                        Neutral
+                                    </span>
+                                </div>
+                            </div>
+                            <h3 class="font-medium text-foreground mb-2" data-bind="email.subject" data-mock="true">Question: integration with API</h3>
+                            <p class="text-sm text-muted-foreground mb-3 line-clamp-2" data-bind="email.body" data-mock="true">
+                                Do you support integration with third-party APIs? Specifically, I'm looking for CRM integration options.
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-muted-foreground">
+                                <div class="flex items-center space-x-4">
+                                    <span><i class="fas fa-robot mr-1"></i>AI Response Ready</span>
+                                    <span><i class="fas fa-clock mr-1"></i>1 hour ago</span>
+                                </div>
+                                <button class="text-primary hover:underline" data-testid="view-response-btn">
+                                    View Response
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Email Item 3 - Urgent -->
+                        <div class="p-6 hover:bg-accent/50 cursor-pointer transition-colors" 
+                             data-testid="email-item-urgent" data-email-id="3">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                        <span class="text-red-700 font-semibold text-sm" data-mock="true">D</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground" data-bind="email.sender" data-mock="true">diana@client.co</p>
+                                        <p class="text-xs text-muted-foreground" data-bind="email.sentDate" data-mock="true">Aug 25, 2025 • 6:58 AM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full" data-testid="priority-badge">
+                                        URGENT
+                                    </span>
+                                    <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full" data-testid="sentiment-badge">
+                                        Negative
+                                    </span>
+                                </div>
+                            </div>
+                            <h3 class="font-medium text-foreground mb-2" data-bind="email.subject" data-mock="true">Support needed for login issue</h3>
+                            <p class="text-sm text-muted-foreground mb-3 line-clamp-2" data-bind="email.body" data-mock="true">
+                                Hi team, I am unable to log into my account since yesterday. Could you please help me resolve this issue?
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-muted-foreground">
+                                <div class="flex items-center space-x-4">
+                                    <span><i class="fas fa-robot mr-1"></i>Processing...</span>
+                                    <span><i class="fas fa-clock mr-1"></i>3 hours ago</span>
+                                </div>
+                                <button class="text-muted-foreground" disabled data-testid="view-response-btn">
+                                    Generating...
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Email Item 4 - Normal -->
+                        <div class="p-6 hover:bg-accent/50 cursor-pointer transition-colors" 
+                             data-testid="email-item-normal" data-email-id="4">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                        <span class="text-green-700 font-semibold text-sm" data-mock="true">B</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-foreground" data-bind="email.sender" data-mock="true">bob@customer.com</p>
+                                        <p class="text-xs text-muted-foreground" data-bind="email.sentDate" data-mock="true">Aug 24, 2025 • 1:58 PM</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full" data-testid="priority-badge">
+                                        Normal
+                                    </span>
+                                    <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full" data-testid="sentiment-badge">
+                                        Positive
+                                    </span>
+                                </div>
+                            </div>
+                            <h3 class="font-medium text-foreground mb-2" data-bind="email.subject" data-mock="true">Request for refund process clarification</h3>
+                            <p class="text-sm text-muted-foreground mb-3 line-clamp-2" data-bind="email.body" data-mock="true">
+                                Could you clarify the steps involved in requesting a refund? I submitted one last week but have no update.
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-muted-foreground">
+                                <div class="flex items-center space-x-4">
+                                    <span><i class="fas fa-check mr-1 text-green-600"></i>Response Sent</span>
+                                    <span><i class="fas fa-clock mr-1"></i>1 day ago</span>
+                                </div>
+                                <button class="text-primary hover:underline" data-testid="view-response-btn">
+                                    View Sent
+                                </button>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+
+                        <div class="p-6 text-center">
+                            <button class="text-primary hover:underline text-sm" data-testid="load-more-btn">
+                                Load More Emails (17 remaining)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: EmailList -->
+
+            <!-- @COMPONENT: Sidebar -->
+            <div class="space-y-6">
+                <!-- Analytics Chart -->
+                <div class="bg-card border border-border rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-foreground mb-4">Email Trends</h3>
+                    <div class="h-48 bg-muted/30 rounded-lg flex items-center justify-center mb-4">
+                        <!-- Placeholder for Chart.js or similar -->
+                        <div class="text-center">
+                            <i class="fas fa-chart-line text-3xl text-muted-foreground mb-2"></i>
+                            <p class="text-sm text-muted-foreground">Interactive Chart Placeholder</p>
+                            <!-- @FUNCTIONALITY: Implement chart showing email volume over time using Chart.js -->
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div class="text-center">
+                            <div class="text-lg font-semibold text-primary" data-bind="analytics.todayCount">8</div>
+                            <div class="text-muted-foreground">Today</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-semibold text-green-600" data-bind="analytics.weekCount">47</div>
+                            <div class="text-muted-foreground">This Week</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Response Preview -->
+                <div class="bg-card border border-border rounded-lg p-6" data-testid="ai-response-panel">
+                    <h3 class="text-lg font-semibold text-foreground mb-4">AI Response Preview</h3>
+                    <div class="bg-muted/50 rounded-lg p-4 mb-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <i class="fas fa-robot text-primary"></i>
+                            <span class="text-sm font-medium text-foreground">Generated Response</span>
+                        </div>
+                        <div class="text-sm text-muted-foreground space-y-2" data-mock="true">
+                            <p>Dear Alice,</p>
+                            <p>Thank you for contacting our support team. I understand this server downtime issue is critical for your operations, and I sincerely apologize for any disruption this may have caused.</p>
+                            <p>I've immediately escalated your case to our senior infrastructure team (Ticket #12345). They are actively investigating the issue and will contact you within the next 15 minutes with a status update.</p>
+                            <p>Best regards,<br>Support Team</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="flex-1 px-3 py-2 bg-primary text-primary-foreground text-sm rounded-md hover:bg-primary/90 transition-colors" 
+                                data-testid="send-response-btn">
+                            <i class="fas fa-paper-plane mr-1"></i>Send Response
+                        </button>
+                        <button class="px-3 py-2 bg-secondary text-secondary-foreground text-sm rounded-md hover:bg-secondary/80 transition-colors" 
+                                data-testid="edit-response-btn" aria-label="Edit response">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Priority Queue -->
+                <div class="bg-card border border-border rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-foreground mb-4">Priority Queue</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg" data-testid="queue-item-urgent">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                                <span class="text-sm font-medium text-foreground">Server downtime</span>
+                            </div>
+                            <span class="text-xs text-red-600 font-medium">Processing</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg" data-testid="queue-item-urgent">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                                <span class="text-sm font-medium text-foreground">Login blocked</span>
+                            </div>
+                            <span class="text-xs text-red-600 font-medium">Queued</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg" data-testid="queue-item-normal">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <span class="text-sm font-medium text-foreground">API integration</span>
+                            </div>
+                            <span class="text-xs text-blue-600 font-medium">Queued</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-card border border-border rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
+                    <div class="space-y-2">
+                        <button class="w-full flex items-center space-x-2 p-3 text-left hover:bg-accent/50 rounded-lg transition-colors" 
+                                data-testid="bulk-response-btn">
+                            <i class="fas fa-layer-group text-muted-foreground"></i>
+                            <span class="text-sm font-medium">Bulk Response</span>
+                        </button>
+                        <button class="w-full flex items-center space-x-2 p-3 text-left hover:bg-accent/50 rounded-lg transition-colors" 
+                                data-testid="export-data-btn">
+                            <i class="fas fa-download text-muted-foreground"></i>
+                            <span class="text-sm font-medium">Export Data</span>
+                        </button>
+                        <button class="w-full flex items-center space-x-2 p-3 text-left hover:bg-accent/50 rounded-lg transition-colors" 
+                                data-testid="configure-filters-btn">
+                            <i class="fas fa-filter text-muted-foreground"></i>
+                            <span class="text-sm font-medium">Configure Filters</span>
+                        </button>
+                        <button class="w-full flex items-center space-x-2 p-3 text-left hover:bg-accent/50 rounded-lg transition-colors" 
+                                data-testid="view-analytics-btn">
+                            <i class="fas fa-analytics text-muted-foreground"></i>
+                            <span class="text-sm font-medium">Advanced Analytics</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: Sidebar -->
+        </div>
+    </div>
+
+    <!-- @COMPONENT: EmailModal -->
+    <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden" 
+         data-testid="email-modal" id="emailModal">
+        <div class="bg-card rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="flex items-center justify-between p-6 border-b border-border">
+                <h2 class="text-xl font-semibold text-foreground">Email Details & Response</h2>
+                <button class="w-8 h-8 flex items-center justify-center hover:bg-accent rounded-lg transition-colors" 
+                        data-testid="close-modal-btn" aria-label="Close modal">
+                    <i class="fas fa-times text-muted-foreground"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Original Email -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-medium text-foreground">Original Email</h3>
+                        <div class="bg-muted/30 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="font-medium text-foreground" data-bind="selectedEmail.sender" data-mock="true">alice@example.com</p>
+                                    <p class="text-xs text-muted-foreground" data-bind="selectedEmail.sentDate" data-mock="true">Aug 26, 2025 • 2:58 AM</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">URGENT</span>
+                                    <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Negative</span>
+                                </div>
+                            </div>
+                            <h4 class="font-medium text-foreground mb-2" data-bind="selectedEmail.subject" data-mock="true">Critical help needed for downtime</h4>
+                            <p class="text-sm text-muted-foreground" data-bind="selectedEmail.body" data-mock="true">
+                                Our servers are down, and we need immediate support. This is highly critical. We've been experiencing this issue for the past 2 hours and it's affecting our entire customer base. Please prioritize this request as it's causing significant business impact.
+                            </p>
+                        </div>
+
+                        <!-- Extracted Information -->
+                        <div>
+                            <h4 class="font-medium text-foreground mb-2">Extracted Information</h4>
+                            <div class="bg-accent/30 rounded-lg p-4 space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Issue Type:</span>
+                                    <span class="text-foreground font-medium" data-bind="extractedInfo.issueType" data-mock="true">Server Downtime</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Urgency Level:</span>
+                                    <span class="text-red-600 font-medium" data-bind="extractedInfo.urgency" data-mock="true">Critical</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Duration:</span>
+                                    <span class="text-foreground font-medium" data-bind="extractedInfo.duration" data-mock="true">2 hours</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-muted-foreground">Business Impact:</span>
+                                    <span class="text-foreground font-medium" data-bind="extractedInfo.impact" data-mock="true">High</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Response -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-medium text-foreground">AI Generated Response</h3>
+                        <div class="space-y-4">
+                            <textarea class="w-full h-64 p-4 border border-border rounded-lg bg-background text-sm font-mono resize-none" 
+                                      data-testid="response-editor" data-mock="true" placeholder="AI response will appear here...">Dear Alice,
+
+Thank you for contacting our support team regarding the server downtime issue. I understand this is causing significant disruption to your business operations, and I sincerely apologize for the inconvenience.
+
+I have immediately escalated your case (Ticket #12345) to our senior infrastructure team with the highest priority. Given the critical nature of this issue, here's what we're doing:
+
+1. Our engineers are actively investigating the root cause
+2. We've initiated emergency protocols to minimize downtime
+3. You'll receive status updates every 15 minutes until resolution
+
+Our team lead will contact you directly within the next 5 minutes at alice@example.com to provide a detailed status update and estimated time to resolution.
+
+We take full responsibility for this issue and will ensure it doesn't happen again. Thank you for your patience during this critical time.
+
+Best regards,
+Senior Support Team
+Direct Line: +1-555-0199</textarea>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex space-x-2">
+                                    <button class="px-4 py-2 bg-primary text-primary-foreground text-sm rounded-md hover:bg-primary/90 transition-colors" 
+                                            data-testid="send-final-response-btn">
+                                        <i class="fas fa-paper-plane mr-1"></i>Send Response
+                                    </button>
+                                    <button class="px-4 py-2 bg-secondary text-secondary-foreground text-sm rounded-md hover:bg-secondary/80 transition-colors" 
+                                            data-testid="regenerate-response-btn">
+                                        <i class="fas fa-sync-alt mr-1"></i>Regenerate
+                                    </button>
+                                </div>
+                                <div class="text-xs text-muted-foreground">
+                                    <span>Response quality: </span>
+                                    <span class="text-green-600 font-medium">95%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Response Metrics -->
+                        <div>
+                            <h4 class="font-medium text-foreground mb-2">Response Analysis</h4>
+                            <div class="bg-muted/30 rounded-lg p-4 space-y-3">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-muted-foreground">Tone:</span>
+                                    <span class="text-green-600 font-medium">Professional & Empathetic</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-muted-foreground">Response Length:</span>
+                                    <span class="text-foreground font-medium">282 words</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-muted-foreground">Sentiment Score:</span>
+                                    <span class="text-foreground font-medium">Positive (0.82)</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-muted-foreground">Action Items:</span>
+                                    <span class="text-foreground font-medium">3 identified</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: EmailModal -->
+
+    <script>
+        // TODO: Implement email management business logic, API calls, and state management
+        
+        (function() {
+            // Mock data for demonstration - replace with real API calls
+            const mockEmails = [
+                {
+                    id: 1,
+                    sender: "alice@example.com",
+                    subject: "Critical help needed for downtime",
+                    body: "Our servers are down, and we need immediate support. This is highly critical.",
+                    sentDate: "2025-08-26T02:58:09Z",
+                    priority: "urgent",
+                    sentiment: "negative"
+                }
+                // Add more emails as needed
+            ];
+
+            // Email filtering functionality
+            function filterEmails() {
+                const priorityFilter = document.querySelector('[data-testid="priority-filter"]').value;
+                const sentimentFilter = document.querySelector('[data-testid="sentiment-filter"]').value;
+                const searchTerm = document.querySelector('[data-testid="search-input"]').value.toLowerCase();
+
+                // TODO: Implement actual filtering logic with API
+                console.log('Filtering emails:', { priorityFilter, sentimentFilter, searchTerm });
+            }
+
+            // Modal handling
+            function openEmailModal(emailId) {
+                const modal = document.getElementById('emailModal');
+                modal.classList.remove('hidden');
+                // TODO: Load email details and AI response
+            }
+
+            function closeEmailModal() {
+                const modal = document.getElementById('emailModal');
+                modal.classList.add('hidden');
+            }
+
+            // Event listeners
+            document.addEventListener('DOMContentLoaded', function() {
+                // Filter change listeners
+                document.querySelector('[data-testid="priority-filter"]').addEventListener('change', filterEmails);
+                document.querySelector('[data-testid="sentiment-filter"]').addEventListener('change', filterEmails);
+                document.querySelector('[data-testid="search-input"]').addEventListener('input', filterEmails);
+
+                // Email item click listeners
+                document.querySelectorAll('[data-testid^="email-item"]').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const emailId = this.getAttribute('data-email-id');
+                        openEmailModal(emailId);
+                    });
+                });
+
+                // Modal close listener
+                document.querySelector('[data-testid="close-modal-btn"]').addEventListener('click', closeEmailModal);
+
+                // Response action listeners
+                document.querySelector('[data-testid="send-response-btn"]').addEventListener('click', function() {
+                    // TODO: Implement send response logic
+                    console.log('Sending response...');
+                });
+
+                document.querySelector('[data-testid="regenerate-response-btn"]').addEventListener('click', function() {
+                    // TODO: Implement response regeneration
+                    console.log('Regenerating response...');
+                });
+
+                // Quick action listeners
+                document.querySelector('[data-testid="export-data-btn"]').addEventListener('click', function() {
+                    // TODO: Implement export functionality
+                    console.log('Exporting data...');
+                });
+
+                // Refresh button
+                document.querySelector('[data-testid="refresh-emails-btn"]').addEventListener('click', function() {
+                    // TODO: Implement email refresh
+                    console.log('Refreshing emails...');
+                });
+
+                // Close modal on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        closeEmailModal();
+                    }
+                });
+
+                // Close modal on background click
+                document.getElementById('emailModal').addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeEmailModal();
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

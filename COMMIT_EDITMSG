@@ -1,0 +1,8 @@
+Add user authentication and authorization middleware
+
+Implement JWT authentication and role-based authorization middleware to secure API routes.
+
+Replit-Commit-Author: Agent
+Replit-Commit-Session-Id: 4fcc1c34-e309-4da0-8356-37e98a308759
+Replit-Commit-Checkpoint-Type: full_checkpoint
+Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/3272182c-e8a6-45e8-94c9-54b0568e028f/4fcc1c34-e309-4da0-8356-37e98a308759/eYs79cR

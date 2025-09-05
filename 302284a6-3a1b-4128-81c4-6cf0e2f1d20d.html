@@ -1,0 +1,615 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Communication Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                }
+            },
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(210 40% 98%);
+            --foreground: hsl(222.2 84% 4.9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222.2 84% 4.9%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222.2 84% 4.9%);
+            --primary: hsl(221.2 83.2% 53.3%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(210 40% 96%);
+            --secondary-foreground: hsl(222.2 84% 4.9%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215.4 16.3% 46.9%);
+            --accent: hsl(210 40% 96%);
+            --accent-foreground: hsl(222.2 84% 4.9%);
+            --destructive: hsl(0 84.2% 60.2%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214.3 31.8% 91.4%);
+            --input: hsl(214.3 31.8% 91.4%);
+            --ring: hsl(221.2 83.2% 53.3%);
+            --radius: 0.5rem;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        
+        .dark {
+            --background: hsl(222.2 84% 4.9%);
+            --foreground: hsl(210 40% 98%);
+            --card: hsl(222.2 84% 4.9%);
+            --card-foreground: hsl(210 40% 98%);
+            --popover: hsl(222.2 84% 4.9%);
+            --popover-foreground: hsl(210 40% 98%);
+            --primary: hsl(217.2 91.2% 59.8%);
+            --primary-foreground: hsl(222.2 84% 4.9%);
+            --secondary: hsl(217.2 32.6% 17.5%);
+            --secondary-foreground: hsl(210 40% 98%);
+            --muted: hsl(217.2 32.6% 17.5%);
+            --muted-foreground: hsl(215 20.2% 65.1%);
+            --accent: hsl(217.2 32.6% 17.5%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 62.8% 30.6%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(217.2 32.6% 17.5%);
+            --input: hsl(217.2 32.6% 17.5%);
+            --ring: hsl(224.3 76.3% 94.1%);
+        }
+
+        * {
+            border-color: hsl(var(--border));
+        }
+
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-family: var(--font-sans);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen bg-background">
+    <!-- @COMPONENT: MainLayout -->
+    <div class="flex h-screen">
+        <!-- @COMPONENT: Sidebar -->
+        <div class="w-64 bg-card border-r border-border flex flex-col">
+            <div class="p-6 border-b border-border">
+                <h1 class="text-xl font-bold text-foreground flex items-center gap-2">
+                    <i class="fas fa-robot text-primary"></i>
+                    AI Assistant
+                </h1>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md bg-primary text-primary-foreground">
+                    <i class="fas fa-inbox"></i>
+                    <span>Email Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                    <i class="fas fa-database"></i>
+                    <span>Knowledge Base</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-border">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-primary-foreground text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-foreground">Admin User</p>
+                        <p class="text-xs text-muted-foreground">admin@company.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: Sidebar -->
+
+        <!-- @COMPONENT: MainContent -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- @COMPONENT: Header -->
+            <header class="bg-card border-b border-border px-6 py-4 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-foreground">Email Dashboard</h2>
+                    <p class="text-muted-foreground">AI-powered email management and response system</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors">
+                        <i class="fas fa-sync-alt"></i>
+                        Sync Emails
+                    </button>
+                    <button class="p-2 text-muted-foreground hover:text-foreground transition-colors">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                </div>
+            </header>
+            <!-- @END_COMPONENT: Header -->
+
+            <!-- @COMPONENT: StatsSection -->
+            <div class="p-6 bg-muted/50">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-card p-6 rounded-lg border border-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground text-sm">Total Emails (24h)</p>
+                                <p class="text-2xl font-bold text-foreground" data-bind="stats.totalEmails">127</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-envelope text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span class="text-green-600 text-sm flex items-center gap-1">
+                                <i class="fas fa-arrow-up"></i>
+                                12%
+                            </span>
+                            <span class="text-muted-foreground text-sm">vs yesterday</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-card p-6 rounded-lg border border-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground text-sm">Urgent Emails</p>
+                                <p class="text-2xl font-bold text-destructive" data-bind="stats.urgentEmails">8</p>
+                            </div>
+                            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span class="text-red-600 text-sm flex items-center gap-1">
+                                <i class="fas fa-arrow-up"></i>
+                                3
+                            </span>
+                            <span class="text-muted-foreground text-sm">pending response</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-card p-6 rounded-lg border border-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground text-sm">Resolved</p>
+                                <p class="text-2xl font-bold text-green-600" data-bind="stats.resolvedEmails">94</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span class="text-green-600 text-sm">74%</span>
+                            <span class="text-muted-foreground text-sm">resolution rate</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-card p-6 rounded-lg border border-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-muted-foreground text-sm">Avg Response Time</p>
+                                <p class="text-2xl font-bold text-foreground" data-bind="stats.avgResponseTime">2.4h</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clock text-purple-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span class="text-green-600 text-sm flex items-center gap-1">
+                                <i class="fas fa-arrow-down"></i>
+                                15%
+                            </span>
+                            <span class="text-muted-foreground text-sm">improvement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: StatsSection -->
+
+            <!-- @COMPONENT: EmailManagement -->
+            <div class="flex-1 p-6 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+                    <!-- @COMPONENT: EmailList -->
+                    <div class="lg:col-span-2 bg-card rounded-lg border border-border flex flex-col">
+                        <div class="p-4 border-b border-border">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-foreground">Support Emails</h3>
+                                <div class="flex items-center gap-2">
+                                    <select class="px-3 py-1 border border-border rounded-md text-sm bg-background">
+                                        <option>All Emails</option>
+                                        <option>Urgent Only</option>
+                                        <option>Unresolved</option>
+                                    </select>
+                                    <button class="px-3 py-1 border border-border rounded-md text-sm hover:bg-accent transition-colors">
+                                        <i class="fas fa-filter"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                                <input type="text" placeholder="Search emails..." class="w-full pl-10 pr-4 py-2 border border-border rounded-md bg-background">
+                            </div>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto" data-mock="true">
+                            <!-- @MAP: filteredEmails.map(email => ( -->
+                            <!-- Email Item 1 - Urgent -->
+                            <div class="p-4 border-b border-border hover:bg-accent/50 cursor-pointer transition-colors" data-bind="email" data-event="click:selectEmail">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">URGENT</span>
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">Negative</span>
+                                    </div>
+                                    <span class="text-xs text-muted-foreground" data-bind="email.sentDate">2 hrs ago</span>
+                                </div>
+                                <div class="mb-2">
+                                    <h4 class="font-medium text-foreground" data-bind="email.subject">Critical help needed for downtime</h4>
+                                    <p class="text-sm text-muted-foreground" data-bind="email.sender">alice@example.com</p>
+                                </div>
+                                <p class="text-sm text-muted-foreground line-clamp-2" data-bind="email.body">Our servers are down, and we need immediate support. This is highly critical...</p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Server Issues</span>
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Enterprise Client</span>
+                                </div>
+                            </div>
+
+                            <!-- Email Item 2 - Normal Priority -->
+                            <div class="p-4 border-b border-border hover:bg-accent/50 cursor-pointer transition-colors" data-bind="email" data-event="click:selectEmail">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">NORMAL</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Neutral</span>
+                                    </div>
+                                    <span class="text-xs text-muted-foreground" data-bind="email.sentDate">4 hrs ago</span>
+                                </div>
+                                <div class="mb-2">
+                                    <h4 class="font-medium text-foreground" data-bind="email.subject">Query about product pricing</h4>
+                                    <p class="text-sm text-muted-foreground" data-bind="email.sender">eve@startup.io</p>
+                                </div>
+                                <p class="text-sm text-muted-foreground line-clamp-2" data-bind="email.body">Hello, I wanted to understand the pricing tiers better. Could you share a detailed breakdown?</p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Pricing</span>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Information Request</span>
+                                </div>
+                            </div>
+
+                            <!-- Email Item 3 - Urgent -->
+                            <div class="p-4 border-b border-border hover:bg-accent/50 cursor-pointer transition-colors" data-bind="email" data-event="click:selectEmail">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">URGENT</span>
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">Negative</span>
+                                    </div>
+                                    <span class="text-xs text-muted-foreground" data-bind="email.sentDate">6 hrs ago</span>
+                                </div>
+                                <div class="mb-2">
+                                    <h4 class="font-medium text-foreground" data-bind="email.subject">Immediate support needed for billing error</h4>
+                                    <p class="text-sm text-muted-foreground" data-bind="email.sender">diana@client.co</p>
+                                </div>
+                                <p class="text-sm text-muted-foreground line-clamp-2" data-bind="email.body">There is a billing error where I was charged twice. This needs immediate correction...</p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Billing</span>
+                                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Financial</span>
+                                </div>
+                            </div>
+
+                            <!-- Email Item 4 - Normal -->
+                            <div class="p-4 border-b border-border hover:bg-accent/50 cursor-pointer transition-colors" data-bind="email" data-event="click:selectEmail">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">NORMAL</span>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Positive</span>
+                                    </div>
+                                    <span class="text-xs text-muted-foreground" data-bind="email.sentDate">1 day ago</span>
+                                </div>
+                                <div class="mb-2">
+                                    <h4 class="font-medium text-foreground" data-bind="email.subject">Question: integration with API</h4>
+                                    <p class="text-sm text-muted-foreground" data-bind="email.sender">eve@startup.io</p>
+                                </div>
+                                <p class="text-sm text-muted-foreground line-clamp-2" data-bind="email.body">Do you support integration with third-party APIs? Specifically, I'm looking for CRM integration options...</p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Integration</span>
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Technical</span>
+                                </div>
+                            </div>
+
+                            <!-- Email Item 5 - Normal -->
+                            <div class="p-4 border-b border-border hover:bg-accent/50 cursor-pointer transition-colors" data-bind="email" data-event="click:selectEmail">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">NORMAL</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Neutral</span>
+                                    </div>
+                                    <span class="text-xs text-muted-foreground" data-bind="email.sentDate">1 day ago</span>
+                                </div>
+                                <div class="mb-2">
+                                    <h4 class="font-medium text-foreground" data-bind="email.subject">Support needed for login issue</h4>
+                                    <p class="text-sm text-muted-foreground" data-bind="email.sender">diana@client.co</p>
+                                </div>
+                                <p class="text-sm text-muted-foreground line-clamp-2" data-bind="email.body">Hi team, I am unable to log into my account since yesterday. Could you please help me resolve this issue?</p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Login</span>
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Account Access</span>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: EmailList -->
+
+                    <!-- @COMPONENT: ResponsePanel -->
+                    <div class="bg-card rounded-lg border border-border flex flex-col">
+                        <div class="p-4 border-b border-border">
+                            <h3 class="text-lg font-semibold text-foreground">AI Response Generator</h3>
+                            <p class="text-sm text-muted-foreground">Select an email to generate contextual responses</p>
+                        </div>
+
+                        <div class="p-4 border-b border-border bg-muted/30">
+                            <div class="mb-3">
+                                <label class="text-sm font-medium text-foreground">Selected Email:</label>
+                                <p class="text-sm text-muted-foreground mt-1" data-bind="selectedEmail.subject" data-mock="true">Critical help needed for downtime</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-sm font-medium text-foreground">From:</label>
+                                <p class="text-sm text-muted-foreground mt-1" data-bind="selectedEmail.sender" data-mock="true">alice@example.com</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-sm font-medium text-foreground">Priority:</label>
+                                <span class="inline-block mt-1 px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full" data-bind="selectedEmail.priority" data-mock="true">URGENT</span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-sm font-medium text-foreground">Sentiment:</label>
+                                <span class="inline-block mt-1 px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full" data-bind="selectedEmail.sentiment" data-mock="true">Negative</span>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 p-4 overflow-y-auto">
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-sm font-medium text-foreground">AI Generated Response:</label>
+                                    <button class="text-xs text-primary hover:text-primary/80 flex items-center gap-1" data-event="click:regenerateResponse">
+                                        <i class="fas fa-sync-alt"></i>
+                                        Regenerate
+                                    </button>
+                                </div>
+                                <div class="bg-muted/50 p-3 rounded-md border border-border">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-robot text-primary"></i>
+                                        <span class="text-xs text-muted-foreground">AI Assistant</span>
+                                        <div class="flex items-center gap-1 ml-auto">
+                                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                            <span class="text-xs text-green-600">Generated</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-foreground" data-bind="aiResponse" data-mock="true">
+                                        <p><strong>Subject:</strong> Re: Critical help needed for downtime - Immediate Assistance</p>
+                                        <br>
+                                        <p>Dear Alice,</p>
+                                        <br>
+                                        <p>Thank you for reaching out to us regarding the server downtime issue. I understand how critical this situation is for your operations, and I sincerely apologize for the inconvenience this has caused.</p>
+                                        <br>
+                                        <p>I have immediately escalated your case to our technical emergency response team (Ticket #SR-2024-8901). Our senior engineers are now investigating the issue with the highest priority.</p>
+                                        <br>
+                                        <p>Here's what we're doing:</p>
+                                        <ul class="list-disc list-inside ml-4 space-y-1">
+                                            <li>Immediate diagnosis of server status</li>
+                                            <li>Real-time monitoring of your infrastructure</li>
+                                            <li>Dedicated engineer assigned to your case</li>
+                                        </ul>
+                                        <br>
+                                        <p>I will personally ensure you receive updates every 30 minutes until this is resolved. You can reach me directly at support@company.com or call our emergency line at +1-800-SUPPORT.</p>
+                                        <br>
+                                        <p>Best regards,<br>Technical Support Team</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-sm font-medium text-foreground block mb-2">Response Tone:</label>
+                                    <select class="w-full px-3 py-2 border border-border rounded-md bg-background text-sm">
+                                        <option>Professional & Empathetic</option>
+                                        <option>Formal</option>
+                                        <option>Friendly</option>
+                                        <option>Technical</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="text-sm font-medium text-foreground block mb-2">Template:</label>
+                                    <select class="w-full px-3 py-2 border border-border rounded-md bg-background text-sm">
+                                        <option>Custom AI Response</option>
+                                        <option>Technical Issue</option>
+                                        <option>Billing Inquiry</option>
+                                        <option>Account Access</option>
+                                        <option>General Support</option>
+                                    </select>
+                                </div>
+
+                                <div class="pt-2">
+                                    <button class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2" data-event="click:sendResponse">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Send Response
+                                    </button>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <button class="flex-1 px-3 py-2 border border-border rounded-md text-sm hover:bg-accent transition-colors" data-event="click:saveAsDraft">
+                                        <i class="fas fa-save"></i>
+                                        Save Draft
+                                    </button>
+                                    <button class="flex-1 px-3 py-2 border border-border rounded-md text-sm hover:bg-accent transition-colors" data-event="click:editResponse">
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: ResponsePanel -->
+                </div>
+            </div>
+            <!-- @END_COMPONENT: EmailManagement -->
+        </div>
+        <!-- @END_COMPONENT: MainContent -->
+    </div>
+    <!-- @END_COMPONENT: MainLayout -->
+
+    <!-- @COMPONENT: LoadingIndicator -->
+    <div id="loadingIndicator" class="fixed inset-0 bg-background/80 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-card p-6 rounded-lg border border-border shadow-lg">
+            <div class="flex items-center gap-3">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                <span class="text-foreground">Processing with AI...</span>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: LoadingIndicator -->
+
+    <!-- @COMPONENT: SuccessToast -->
+    <div id="successToast" class="fixed top-4 right-4 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg hidden z-50">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-check-circle"></i>
+            <span>Email response sent successfully!</span>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: SuccessToast -->
+
+    <script>
+        // TODO: Implement real email processing logic, sentiment analysis, and AI response generation
+        
+        (function() {
+            // Simulated data and interactions for mockup demonstration
+            let selectedEmail = null;
+            let emails = [
+                {
+                    id: 1,
+                    sender: 'alice@example.com',
+                    subject: 'Critical help needed for downtime',
+                    body: 'Our servers are down, and we need immediate support. This is highly critical.',
+                    priority: 'URGENT',
+                    sentiment: 'Negative',
+                    timestamp: '2 hrs ago',
+                    tags: ['Server Issues', 'Enterprise Client']
+                },
+                {
+                    id: 2,
+                    sender: 'eve@startup.io',
+                    subject: 'Query about product pricing',
+                    body: 'Hello, I wanted to understand the pricing tiers better. Could you share a detailed breakdown?',
+                    priority: 'NORMAL',
+                    sentiment: 'Neutral',
+                    timestamp: '4 hrs ago',
+                    tags: ['Pricing', 'Information Request']
+                }
+            ];
+
+            // Simulate email selection
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event*="selectEmail"]')) {
+                    e.preventDefault();
+                    selectedEmail = emails[0]; // Simulate selecting first email
+                    console.log('Email selected:', selectedEmail);
+                }
+
+                if (e.target.closest('[data-event*="regenerateResponse"]')) {
+                    e.preventDefault();
+                    showLoading();
+                    setTimeout(hideLoading, 2000);
+                    console.log('Regenerating AI response...');
+                }
+
+                if (e.target.closest('[data-event*="sendResponse"]')) {
+                    e.preventDefault();
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                        showSuccessToast();
+                    }, 1500);
+                    console.log('Sending response...');
+                }
+            });
+
+            function showLoading() {
+                document.getElementById('loadingIndicator').classList.remove('hidden');
+                document.getElementById('loadingIndicator').classList.add('flex');
+            }
+
+            function hideLoading() {
+                document.getElementById('loadingIndicator').classList.add('hidden');
+                document.getElementById('loadingIndicator').classList.remove('flex');
+            }
+
+            function showSuccessToast() {
+                const toast = document.getElementById('successToast');
+                toast.classList.remove('hidden');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 3000);
+            }
+
+            // Simulate real-time email updates
+            setInterval(() => {
+                const stats = document.querySelectorAll('[data-bind*="stats"]');
+                // TODO: Update stats with real data from backend
+                console.log('Updating email statistics...');
+            }, 30000);
+
+        })();
+    </script>
+</body>
+</html>
